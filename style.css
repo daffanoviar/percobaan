@@ -1,0 +1,204 @@
+@import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght=600&family=Poppins:wght=400;500&display=swap');
+
+* {
+    margin: 0;
+    padding: 0;
+    box-sizing: border-box;
+}
+
+body {
+    /* Latar belakang gradasi pink lembut */
+    background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+    font-family: 'Poppins', sans-serif;
+    color: #880e4f;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    min-height: 100vh;
+    overflow: hidden; /* Mencegah scroll yang tidak perlu */
+}
+
+#app-container {
+    width: 100%;
+    max-width: 400px; /* Ukuran layar HP */
+    height: 100vh;
+    max-height: 800px;
+    background-color: rgba(255, 255, 255, 0.3);
+    position: relative;
+    box-shadow: 0 10px 30px rgba(0,0,0,0.1);
+}
+
+/* Mengatur Layar (Sembunyi / Tampil) */
+.screen {
+    display: none; /* Sembunyikan secara default */
+    flex-direction: column;
+    align-items: center;
+    justify-content: center;
+    text-align: center;
+    height: 100%;
+    padding: 30px 20px;
+    animation: fadeIn 0.5s ease-in-out;
+}
+
+.screen.active {
+    display: flex; /* Tampilkan jika punya class 'active' */
+}
+
+/* Tipografi */
+.title {
+    font-family: 'Playfair Display', serif;
+    font-size: 1.8rem;
+    color: #d81b60;
+    margin-bottom: 15px;
+}
+
+.subtitle {
+    font-size: 0.9rem;
+    color: #555;
+    margin-bottom: 30px;
+    line-height: 1.5;
+}
+
+/* Tombol Pink */
+.btn-pink {
+    background: linear-gradient(to right, #f48fb1, #f06292);
+    color: white;
+    border: none;
+    padding: 12px 30px;
+    border-radius: 25px;
+    font-size: 1rem;
+    font-weight: 500;
+    cursor: pointer;
+    box-shadow: 0 4px 10px rgba(240, 98, 146, 0.4);
+    transition: transform 0.2s;
+    margin-top: auto; /* Mendorong tombol ke bawah */
+    margin-bottom: 20px;
+}
+
+.btn-pink:active {
+    transform: scale(0.95);
+}
+
+/* Animasi Transisi Antar Layar */
+@keyframes fadeIn {
+    from { opacity: 0; transform: translateY(10px); }
+    to { opacity: 1; transform: translateY(0); }
+}
+
+/* Placeholder sementara untuk elemen visual Layar 2 & 3 */
+.game-board-placeholder, .thread-placeholder {
+    width: 200px;
+    height: 200px;
+    background-color: rgba(255, 255, 255, 0.5);
+    border-radius: 20px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    margin-bottom: 30px;
+    border: 2px dashed #f48fb1;
+}
+
+
+/* ====================================================
+   --- DESAIN TURNTABLE INTERAKTIF (LAYAR 1) ---
+   ==================================================== */
+
+/* Kotak Dudukan Utama Pemutar */
+.turntable-container {
+    position: relative;
+    width: 260px;
+    height: 260px;
+    background: #ffffff;
+    border-radius: 30px;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 10px 25px rgba(216, 27, 96, 0.15);
+    margin: 20px auto 40px auto;
+    border: 4px solid #f8bbd0;
+    cursor: pointer;
+}
+
+/* Dudukan Bulat Dalam */
+.vinyl-player {
+    width: 210px;
+    height: 210px;
+    background: #fce4ec;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: inset 0 0 10px rgba(0,0,0,0.05);
+}
+
+/* Piringan Hitam (Gradasi Pink Tua/Burgundy) */
+.vinyl-record {
+    width: 190px;
+    height: 190px;
+    background: radial-gradient(circle, #c2185b 30%, #880e4f 31%, #4a001f 40%, #880e4f 70%, #c2185b 100%);
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    box-shadow: 0 6px 15px rgba(0,0,0,0.3);
+    transition: transform 0.5s ease;
+}
+
+/* Label Tengah Piringan */
+.vinyl-center {
+    width: 55px;
+    height: 55px;
+    background-color: #f8bbd0;
+    border-radius: 50%;
+    display: flex;
+    justify-content: center;
+    align-items: center;
+    font-size: 1.3rem;
+    box-shadow: 0 2px 5px rgba(0,0,0,0.2);
+}
+
+/* Jarum / Lengan Pemutar (Tonearm) */
+.tonearm {
+    position: absolute;
+    top: 25px;
+    right: 45px;
+    width: 12px;
+    height: 85px;
+    background: #b0bec5;
+    border-radius: 4px;
+    transform-origin: top center; /* Titik tumpu rotasi di atas */
+    transform: rotate(-25deg); /* Posisi awal di luar piringan */
+    transition: transform 0.6s cubic-bezier(0.4, 0, 0.2, 1);
+    z-index: 10;
+}
+
+/* Kepala Jarum */
+.tonearm::after {
+    content: '';
+    position: absolute;
+    bottom: 0;
+    left: -4px;
+    width: 20px;
+    height: 15px;
+    background: #78909c;
+    border-radius: 2px;
+}
+
+/* --- TRIGER ANIMASI (Saat class .playing aktif lewat JS) --- */
+
+/* Jarum bergeser masuk ke atas piringan */
+.turntable-container.playing .tonearm {
+    transform: rotate(12deg);
+}
+
+/* Piringan mulai berputar konstan */
+.turntable-container.playing .vinyl-record {
+    animation: spinVinyl 3s linear infinite;
+    animation-delay: 0.6s; /* Nunggu jarum mendarat dulu */
+}
+
+/* Jalur rotasi piringan */
+@keyframes spinVinyl {
+    from { transform: rotate(0deg); }
+    to { transform: rotate(360deg); }
+}

@@ -1,0 +1,765 @@
+<!DOCTYPE html>
+<html lang="id">
+<head>
+    <meta charset="UTF-8">
+    <meta name="viewport" content="width=device-width, initial-scale=1.0">
+    <title>For Zeyaa 🌸</title>
+    
+    <style>
+        @import url('https://fonts.googleapis.com/css2?family=Playfair+Display:wght@600&family=Poppins:wght@400;500;600&display=swap');
+
+        * {
+            margin: 0;
+            padding: 0;
+            box-sizing: border-box;
+        }
+
+        body {
+            background: linear-gradient(135deg, #fce4ec, #f8bbd0);
+            font-family: 'Poppins', sans-serif;
+            color: #880e4f;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            min-height: 100vh;
+            overflow: hidden;
+        }
+
+        /* CONTAINER UTAMA GLASSMORPHISM SESUAI VIDEO */
+        #app-container {
+            width: 100%;
+            max-width: 400px;
+            height: 100vh;
+            max-height: 800px;
+            background-color: rgba(255, 255, 255, 0.35);
+            backdrop-filter: blur(12px);
+            -webkit-backdrop-filter: blur(12px);
+            border: 2px solid rgba(255, 255, 255, 0.5);
+            border-radius: 30px;
+            position: relative;
+            box-shadow: 0 20px 40px rgba(216, 27, 96, 0.15);
+            display: flex;
+            flex-direction: column;
+            overflow: hidden;
+        }
+
+        .screen {
+            display: none;
+            flex-direction: column;
+            align-items: center;
+            justify-content: center;
+            text-align: center;
+            height: 100%;
+            width: 100%;
+            padding: 30px 25px;
+            animation: fadeIn 0.5s ease-in-out forwards;
+            position: absolute;
+            top: 0;
+            left: 0;
+        }
+
+        .screen.active {
+            display: flex;
+            position: relative;
+        }
+
+        .title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.8rem;
+            color: #d81b60;
+            margin-bottom: 12px;
+        }
+
+        .subtitle {
+            font-size: 0.88rem;
+            color: #555;
+            margin-bottom: 20px;
+            line-height: 1.5;
+        }
+
+        .btn-pink {
+            background: linear-gradient(to right, #f48fb1, #f06292);
+            color: white;
+            border: none;
+            padding: 12px 35px;
+            border-radius: 25px;
+            font-size: 1rem;
+            font-weight: 500;
+            cursor: pointer;
+            box-shadow: 0 4px 10px rgba(240, 98, 146, 0.4);
+            transition: all 0.2s ease;
+            margin-top: 15px;
+        }
+
+        .btn-pink:active {
+            transform: scale(0.95);
+        }
+
+        .btn-pink:disabled {
+            background: #e0e0e0;
+            color: #9e9e9e;
+            box-shadow: none;
+            cursor: not-allowed;
+        }
+
+        @keyframes fadeIn {
+            from { opacity: 0; transform: translateY(15px); }
+            to { opacity: 1; transform: translateY(0); }
+        }
+
+        /* ====================================================
+           --- LAYAR 1: TURNTABLE BENTUK BULAT ---
+           ==================================================== */
+        .turntable-wrapper {
+            position: relative;
+            width: 250px;
+            height: 250px;
+            margin: 15px auto;
+        }
+
+        .turntable-container {
+            width: 100%;
+            height: 100%;
+            background: #ffffff;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 10px 25px rgba(216, 27, 96, 0.15);
+            border: 4px solid #f8bbd0;
+            cursor: pointer;
+            position: relative;
+        }
+
+        .vinyl-player {
+            width: 88%;
+            height: 88%;
+            background: #fdf0f4;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+        }
+
+        .vinyl-record {
+            width: 90%;
+            height: 90%;
+            background: repeating-radial-gradient(circle, #2c0011, #2c0011 2px, #4a001f 4px, #880e4f 5px);
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            box-shadow: 0 6px 15px rgba(0,0,0,0.35);
+        }
+
+        .vinyl-center {
+            width: 50px;
+            height: 50px;
+            background-color: #f8bbd0;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            border: 2px solid #880e4f;
+        }
+
+        .tonearm {
+            position: absolute;
+            top: 15px;
+            right: 35px;
+            width: 12px;
+            height: 80px;
+            background: linear-gradient(to right, #cfd8dc, #b0bec5);
+            border-radius: 4px;
+            transform-origin: top center;
+            transform: rotate(-30deg);
+            transition: transform 0.6s ease;
+            z-index: 10;
+        }
+
+        .tonearm::after {
+            content: '';
+            position: absolute;
+            bottom: -2px;
+            left: -4px;
+            width: 20px;
+            height: 15px;
+            background: #78909c;
+            border-radius: 2px;
+            transform: rotate(15deg);
+        }
+
+        .notes-container {
+            position: absolute;
+            top: 0;
+            left: 0;
+            width: 100%;
+            height: 100%;
+            pointer-events: none;
+            z-index: 5;
+        }
+
+        .floating-note {
+            position: absolute;
+            bottom: 60px;
+            left: 50%;
+            font-size: 20px;
+            opacity: 0;
+            animation: noteFly 2s ease-in-out infinite;
+        }
+
+        @keyframes noteFly {
+            0% { transform: translate(-50%, 0) scale(0.5) rotate(0deg); opacity: 0; }
+            20% { opacity: 1; }
+            100% { transform: translate(var(--end-x), -120px) scale(1.1) rotate(var(--end-rot)); opacity: 0; }
+        }
+
+        .turntable-container.playing .tonearm { transform: rotate(12deg); }
+        .turntable-container.playing .vinyl-record { animation: spinVinyl 3s linear infinite; animation-delay: 0.6s; }
+
+        @keyframes spinVinyl {
+            from { transform: rotate(0deg); }
+            to { transform: rotate(360deg); }
+        }
+
+        /* ====================================================
+           --- LAYAR 2: GAME MENCARI KATA SESUAI VIDEO ---
+           ==================================================== */
+        .word-grid {
+            display: grid;
+            grid-template-columns: repeat(5, 1fr);
+            gap: 8px;
+            background: rgba(255, 255, 255, 0.6);
+            padding: 12px;
+            border-radius: 20px;
+            box-shadow: 0 8px 20px rgba(216, 27, 96, 0.08);
+            margin-bottom: 15px;
+            width: 100%;
+            max-width: 300px;
+        }
+
+        .letter-cell {
+            aspect-ratio: 1;
+            background-color: #ffffff;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.1rem;
+            font-weight: 600;
+            color: #880e4f;
+            cursor: pointer;
+            user-select: none;
+            transition: all 0.2s ease;
+            box-shadow: 0 2px 5px rgba(0,0,0,0.04);
+        }
+
+        .letter-cell.selected {
+            background: linear-gradient(135deg, #f48fb1, #f06292);
+            color: white;
+            transform: scale(1.05);
+        }
+
+        .letter-cell.found-word {
+            background: linear-gradient(135deg, #a5d6a7, #81c784) !important;
+            color: #1b5e20 !important;
+        }
+
+        .game-status-text {
+            font-size: 0.95rem;
+            font-weight: 500;
+            color: #c2185b;
+            min-height: 25px;
+            margin-top: 5px;
+        }
+
+        /* ====================================================
+           --- LAYAR 3: TARIK BENANG + POP-UP SURAT ---
+           ==================================================== */
+        .thread-area {
+            position: relative;
+            width: 100%;
+            height: 180px;
+            display: flex;
+            justify-content: center;
+            margin-bottom: 15px;
+        }
+
+        .pull-string-container {
+            display: flex;
+            flex-direction: column;
+            align-items: center;
+            cursor: pointer;
+            position: absolute;
+            top: 0;
+        }
+
+        .vertical-line {
+            width: 3px;
+            height: 90px;
+            background: linear-gradient(#f48fb1, #e91e63);
+            transition: height 0.3s ease;
+        }
+
+        .pull-badge {
+            background: #d81b60;
+            color: white;
+            padding: 6px 18px;
+            border-radius: 20px;
+            font-size: 0.85rem;
+            font-weight: 500;
+            margin-top: -2px;
+            box-shadow: 0 4px 10px rgba(216, 27, 96, 0.3);
+            transition: transform 0.3s ease;
+        }
+
+        .pull-string-container.dragging .vertical-line { height: 140px; }
+
+        /* Pop-Up Surat Lembaran */
+        .confession-card {
+            background: #ffffff;
+            width: 100%;
+            max-width: 340px;
+            border-radius: 24px;
+            box-shadow: 0 15px 35px rgba(216, 27, 96, 0.15);
+            padding: 20px;
+            text-align: left;
+            display: none;
+            animation: scaleUp 0.5s cubic-bezier(0.175, 0.885, 0.32, 1.275) forwards;
+            max-height: 480px;
+            overflow-y: auto;
+            margin: auto 0; /* Membuat posisi kartu benar-benar seimbang di tengah vertikal */
+        }
+
+        @keyframes scaleUp {
+            from { transform: scale(0.8); opacity: 0; }
+            to { transform: scale(1); opacity: 1; }
+        }
+
+        .confession-title {
+            font-family: 'Playfair Display', serif;
+            font-size: 1.3rem;
+            color: #d81b60;
+            text-align: center;
+            margin-bottom: 15px;
+            border-bottom: 2px dashed #f8bbd0;
+            padding-bottom: 8px;
+        }
+
+        .confession-text {
+            font-size: 0.85rem;
+            line-height: 1.6;
+            color: #444;
+        }
+        .confession-text p { margin-bottom: 12px; }
+
+        /* ====================================================
+           --- LAYAR 4: GAME COCOKAN EMOJI (MEMORY MATCH) ---
+           ==================================================== */
+        .memory-grid {
+            display: grid;
+            grid-template-columns: repeat(4, 1fr);
+            gap: 10px;
+            width: 100%;
+            max-width: 300px;
+            margin: 15px 0;
+        }
+
+        .memory-card {
+            aspect-ratio: 1;
+            background-color: #ffffff;
+            border-radius: 12px;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.5rem;
+            cursor: pointer;
+            position: relative;
+            transform-style: preserve-3d;
+            transition: transform 0.4s ease;
+            box-shadow: 0 4px 10px rgba(0,0,0,0.05);
+        }
+
+        .memory-card .front-face, .memory-card .back-face {
+            position: absolute;
+            width: 100%;
+            height: 100%;
+            backface-visibility: hidden;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            border-radius: 12px;
+        }
+
+        .memory-card .back-face {
+            background-color: #ffcdd2;
+            color: #d81b60;
+        }
+
+        .memory-card .front-face {
+            background-color: #ffffff;
+            transform: rotateY(180deg);
+        }
+
+        .memory-card.flipped {
+            transform: rotateY(180deg);
+        }
+
+        /* ====================================================
+           --- LAYAR 5: SLIDE TO SAY YES ---
+           ==================================================== */
+        .slider-track {
+            width: 100%;
+            max-width: 280px;
+            height: 55px;
+            background: rgba(255, 255, 255, 0.6);
+            border-radius: 30px;
+            position: relative;
+            margin: 40px 0;
+            padding: 5px;
+            display: flex;
+            align-items: center;
+            border: 1px solid #f8bbd0;
+            box-shadow: inset 0 2px 5px rgba(0,0,0,0.05);
+        }
+
+        .slider-text {
+            position: absolute;
+            width: 100%;
+            text-align: center;
+            font-size: 0.85rem;
+            font-weight: 500;
+            color: #c2185b;
+            pointer-events: none;
+            left: 0;
+        }
+
+        .slider-handle {
+            width: 45px;
+            height: 45px;
+            background: #d81b60;
+            border-radius: 50%;
+            display: flex;
+            justify-content: center;
+            align-items: center;
+            font-size: 1.2rem;
+            color: white;
+            cursor: grab;
+            position: absolute;
+            left: 5px;
+            box-shadow: 0 4px 10px rgba(216, 27, 96, 0.3);
+            transition: left 0.1s ease;
+            touch-action: none;
+        }
+
+        /* LAYAR 6: BERHASIL */
+        .celebration-icon {
+            font-size: 4rem;
+            margin-bottom: 15px;
+            animation: bounce 1.5s infinite;
+        }
+        @keyframes bounce {
+            0%, 100% { transform: translateY(0); }
+            50% { transform: translateY(-10px); }
+        }
+    </style>
+</head>
+<body>
+
+    <!-- Audio Player untuk musik -->
+    <audio id="music-player" style="display: none;">
+        <source src="about-you-1975.mp3" type="audio/mpeg">
+    </audio>
+
+    <div id="app-container">
+        
+        <section id="screen-1" class="screen active">
+            <h1 class="title">For you, Zeyaa 🌸</h1>
+            <p class="subtitle">
+                Hey, it's Ruru. Ever since March 31, 2026, every moment with you has been so special. I made this little surprise to show you how much I care.
+                <br><br>
+                <span id="music-status">Tap the turntable to set the vibe.</span>
+            </p>
+            
+            <div class="turntable-wrapper">
+                <div class="notes-container" id="notes-wrapper"></div>
+                <div class="turntable-container" id="turntable">
+                    <div class="tonearm"></div>
+                    <div class="vinyl-player">
+                        <div class="vinyl-record">
+                            <div class="vinyl-center">🌸</div>
+                        </div>
+                    </div>
+                </div>
+            </div>
+
+            <button class="btn-pink" onclick="goToScreen(2)">Step Inside</button>
+        </section>
+
+        <section id="screen-2" class="screen">
+            <h2 class="title">Let's play a little game 🎀</h2>
+            <p class="subtitle">Connect the letters to find three words that always come to my mind whenever I think of you.<br>(Hint: SWEET, CUTE, LOVE)</p>
+            
+            <div class="word-grid" id="grid-container"></div>
+            <div class="game-status-text" id="game-status-msg"></div>
+
+            <button class="btn-pink" id="next-to-screen-3" onclick="goToScreen(3)" style="display: none;">Step Inside</button>
+        </section>
+
+        <section id="screen-3" class="screen">
+            <h2 class="title" id="screen3-title">A Little Surprise 🎁</h2>
+            <p class="subtitle" id="screen3-subtitle">Pull the magical pink thread downwards to unseal it.</p>
+            
+            <div class="thread-area" id="thread-zone">
+                <div class="pull-string-container" id="pull-string">
+                    <div class="vertical-line"></div>
+                    <div class="pull-badge">Pull</div>
+                </div>
+            </div>
+
+            <div class="confession-card" id="confession-letter">
+                <div class="confession-title">My Confession 💌</div>
+                <div class="confession-text">
+                    <p>Hey Zeyaa,</p>
+                    <p>I know this might seem a little out of nowhere, but there are some things I really need to tell you. It's actually crazy to think about how close we've gotten since March 31st. Those late-night chats, the random things we share, the jokes... they all slowly became my favorite part of the day.</p>
+                    <p>These past months have been nothing short of amazing to me. You have this incredibly effortless way of making everything feel brighter. I love our conversations, the way you laugh, and just how easy and comfortable it is to be around you.</p>
+                    <p>Zeyaa, I've always tried to make you trust me. I never want you to go through the things you've experienced before. I want to help you forget the things that once made you suffer and hurt. I also have to be honest, it always hurts me whenever you talk about another guy. Especially when you told me about that green-flag guy who was once close to you but had a different religion. When I saw the look on your face while talking about him, I could tell that he was really your type. Honestly, it hurt because maybe I'm far from your ideal type. But I don't mind that, because I know I can be more than just your type. I want to be the one who holds your hand, the one who takes care of you. I really hope you can feel how genuine my feelings are for you. ❤️</p>
+                    <p style="text-align: right; font-weight: 600;">Yours, Ruru</p>
+                </div>
+                <center><button class="btn-pink" onclick="goToScreen(4)">Read On 🌸</button></center>
+            </div>
+        </section>
+
+        <section id="screen-4" class="screen">
+            <h2 class="title">A Little Challenge 🌸</h2>
+            <p class="subtitle">Let's play one more quick game, Zeyaa! Match all the cute emojis to unlock the final surprise I have for you.</p>
+            
+            <div class="memory-grid" id="memory-container"></div>
+
+            <button class="btn-pink" id="next-to-screen-5" onclick="goToScreen(5)" style="display: none;">One Last Thing 💖</button>
+        </section>
+
+        <section id="screen-5" class="screen">
+            <h2 class="title">So, Zeyaa... ❤️</h2>
+            <p class="subtitle">After everything I've just told you... will you be my girlfriend?</p>
+            
+            <div class="slider-track" id="slider-track">
+                <div class="slider-text">Slide the heart to say Yes ➡️</div>
+                <div class="slider-handle" id="slider-handle">💖</div>
+            </div>
+        </section>
+
+        <section id="screen-6" class="screen">
+            <div class="celebration-icon">💝🎉</div>
+            <h2 class="title">It's a Yes! 💖</h2>
+            <p class="subtitle">My heart is so happy right now.<br>Take a screenshot and send it to me! 📸</p>
+            <button class="btn-pink" onclick="alert('Love you, Zeyaa! 🥰')">Close & Smile 🌸</button>
+        </section>
+
+    </div>
+
+    <script>
+        const audioPlayer = document.getElementById('music-player');
+
+        function playMusic() {
+            if (audioPlayer) {
+                audioPlayer.play().catch(err => console.log('Audio play error:', err));
+            }
+        }
+
+        function pauseMusic() {
+            if (audioPlayer) {
+                audioPlayer.pause();
+            }
+        }
+
+        function goToScreen(screenNumber) {
+            document.querySelectorAll('.screen').forEach(s => s.classList.remove('active'));
+            document.getElementById('screen-' + screenNumber).classList.add('active');
+        }
+
+        // --- LAYAR 1 INTERAKSI TURNTABLE ---
+        const turntable = document.getElementById('turntable');
+        const musicStatus = document.getElementById('music-status');
+        const notesWrapper = document.getElementById('notes-wrapper');
+        let noteInterval;
+
+        turntable.addEventListener('click', () => {
+            turntable.classList.toggle('playing');
+            if (turntable.classList.contains('playing')) {
+                musicStatus.innerHTML = "🎵 Now Playing: About You - The 1975 💖";
+                playMusic();
+                
+                noteInterval = setInterval(() => {
+                    const note = document.createElement('div');
+                    note.classList.add('floating-note');
+                    note.textContent = ['🎵', '🌸', '💖', '✨'][Math.floor(Math.random() * 4)];
+                    note.style.setProperty('--end-x', (Math.random() * 100 - 50) + 'px');
+                    note.style.setProperty('--end-rot', (Math.random() * 60 - 30) + 'deg');
+                    note.style.left = (Math.random() * 40 + 30) + '%';
+                    notesWrapper.appendChild(note);
+                    setTimeout(() => note.remove(), 2000);
+                }, 400);
+            } else {
+                musicStatus.innerHTML = "Tap the turntable to set the vibe.";
+                pauseMusic();
+                clearInterval(noteInterval);
+            }
+        });
+
+        // --- LAYAR 2 GAME MENCARI KATA ---
+        const gridLetters = [
+            'S', 'W', 'E', 'E', 'T',
+            'C', 'L', 'I', 'V', 'E',
+            'U', 'O', 'O', 'Q', 'R',
+            'T', 'L', 'V', 'V', 'X',
+            'E', 'Y', 'B', 'D', 'E'
+        ];
+
+        const wordCoordinates = {
+            'SWEET': [0, 1, 2, 3, 4],   
+            'CUTE': [5, 10, 15, 20],   
+            'LOVE': [6, 12, 18, 24]    
+        };
+
+        let selectedIndices = [];
+        let foundWords = { SWEET: false, CUTE: false, LOVE: false };
+        const gridContainer = document.getElementById('grid-container');
+        const statusMsg = document.getElementById('game-status-msg');
+
+        gridLetters.forEach((letter, index) => {
+            const cell = document.createElement('div');
+            cell.classList.add('letter-cell');
+            cell.textContent = letter;
+            cell.addEventListener('click', () => {
+                if (cell.classList.contains('found-word')) return;
+
+                if (cell.classList.contains('selected')) {
+                    cell.classList.remove('selected');
+                    selectedIndices = selectedIndices.filter(i => i !== index);
+                } else {
+                    cell.classList.add('selected');
+                    selectedIndices.push(index);
+                }
+
+                let currentString = selectedIndices.map(i => gridLetters[i]).join('');
+                
+                if (wordCoordinates[currentString] && !foundWords[currentString]) {
+                    foundWords[currentString] = true;
+                    statusMsg.textContent = `You found "${currentString}"! 💖`;
+                    wordCoordinates[currentString].forEach(idx => {
+                        gridContainer.children[idx].classList.add('found-word');
+                    });
+                    selectedIndices = [];
+                    document.querySelectorAll('.letter-cell').forEach(c => c.classList.remove('selected'));
+                    
+                    if (foundWords.SWEET && foundWords.CUTE && foundWords.LOVE) {
+                        statusMsg.textContent = "The stars align perfect. You may proceed.";
+                        statusMsg.style.color = "#2e7d32";
+                        document.getElementById('next-to-screen-3').style.display = "inline-block";
+                    }
+                }
+            });
+            gridContainer.appendChild(cell);
+        });
+
+        // --- LAYAR 3 MEKANIK DRAG TALI KE BAWAH ---
+        const pullString = document.getElementById('pull-string');
+        const confessionLetter = document.getElementById('confession-letter');
+        let isDragging = false;
+
+        const handleStart = () => { isDragging = true; pullString.classList.add('dragging'); };
+        const handleEnd = () => {
+            if (isDragging) {
+                isDragging = false;
+                pullString.classList.remove('dragging');
+                pullString.style.display = 'none';
+                document.getElementById('screen3-title').style.display = 'none';
+                document.getElementById('screen3-subtitle').style.display = 'none';
+                
+                // BARIS YANG DIPERBAIKI: Menghilangkan sisa area kosong dari wadah benang
+                document.getElementById('thread-zone').style.display = 'none'; 
+                
+                confessionLetter.style.display = 'block';
+            }
+        };
+
+        pullString.addEventListener('mousedown', handleStart);
+        window.addEventListener('mouseup', handleEnd);
+        pullString.addEventListener('touchstart', handleStart);
+        window.addEventListener('touchend', handleEnd);
+
+        // --- LAYAR 4 GAME COCOKAN EMOJI (MEMORY MATCH) ---
+        const emojis = ['☀️', '🦄', '🌸', '✨', '🍭', '💖', '🧸', '🎀'];
+        let cardList = [...emojis, ...emojis].sort(() => Math.random() - 0.5);
+        const memoryContainer = document.getElementById('memory-container');
+        let flippedCards = [];
+        let matchedPairs = 0;
+
+        cardList.forEach((emoji, idx) => {
+            const card = document.createElement('div');
+            card.classList.add('memory-card');
+            card.dataset.emoji = emoji;
+            card.innerHTML = `<div class="back-face">🌸</div><div class="front-face">${emoji}</div>`;
+            
+            card.addEventListener('click', () => {
+                if (card.classList.contains('flipped') || flippedCards.length === 2) return;
+                card.classList.add('flipped');
+                flippedCards.push(card);
+
+                if (flippedCards.length === 2) {
+                    if (flippedCards[0].dataset.emoji === flippedCards[1].dataset.emoji) {
+                        matchedPairs++;
+                        flippedCards = [];
+                        if (matchedPairs === emojis.length) {
+                            document.getElementById('next-to-screen-5').style.display = 'inline-block';
+                        }
+                    } else {
+                        setTimeout(() => {
+                            flippedCards[0].classList.remove('flipped');
+                            flippedCards[1].classList.remove('flipped');
+                            flippedCards = [];
+                        }, 800);
+                    }
+                }
+            });
+            memoryContainer.appendChild(card);
+        });
+
+        // --- LAYAR 5 INTERAKSI SLIDE TO SAY YES ---
+        const handle = document.getElementById('slider-handle');
+        const track = document.getElementById('slider-track');
+        let isSliding = false;
+
+        const startSlide = () => { isSliding = true; };
+        const doSlide = (e) => {
+            if (!isSliding) return;
+            let clientX = e.touches ? e.touches[0].clientX : e.clientX;
+            let rect = track.getBoundingClientRect();
+            let x = clientX - rect.left - 22; 
+            let maxX = rect.width - handle.offsetWidth - 5;
+            
+            if (x < 5) x = 5;
+            if (x > maxX) {
+                x = maxX;
+                isSliding = false;
+                goToScreen(6); 
+            }
+            handle.style.left = x + 'px';
+        };
+        const stopSlide = () => {
+            if (!isSliding) return;
+            isSliding = false;
+            handle.style.left = '5px'; 
+        };
+
+        handle.addEventListener('mousedown', startSlide);
+        window.addEventListener('mousemove', doSlide);
+        window.addEventListener('mouseup', stopSlide);
+        handle.addEventListener('touchstart', startSlide);
+        window.addEventListener('touchmove', doSlide);
+        window.addEventListener('touchend', stopSlide);
+    </script>
+</body>
+</html>
